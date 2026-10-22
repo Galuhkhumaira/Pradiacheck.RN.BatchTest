@@ -1,0 +1,70 @@
+diff --git a/node_modules/onnxruntime-react-native/android/build.gradle b/node_modules/onnxruntime-react-native/android/build.gradle
+index 41b4359..00e3bcf 100644
+--- a/node_modules/onnxruntime-react-native/android/build.gradle
++++ b/node_modules/onnxruntime-react-native/android/build.gradle
+@@ -85,17 +85,17 @@ android {
+         if (REACT_NATIVE_MINOR_VERSION >= 71) {
+           // fabricjni required c++_shared
+           arguments "-DANDROID_STL=c++_shared",
+-            "-DNODE_MODULES_DIR=${nodeModules}",
+-            "-DORT_EXTENSIONS_ENABLED=${ortExtensionsEnabled}",
+-            "-DREACT_NATIVE_VERSION=${REACT_NATIVE_VERSION}",
+-            "-DUSE_QNN=${useQnn}",
+-            "-DUSE_NNAPI=${!useQnn}"
++                  "-DNODE_MODULES_DIR=${nodeModules}",
++                  "-DORT_EXTENSIONS_ENABLED=${ortExtensionsEnabled}",
++                  "-DREACT_NATIVE_VERSION=${REACT_NATIVE_VERSION}",
++                  "-DUSE_QNN=${useQnn}",
++                  "-DUSE_NNAPI=${!useQnn}"
+         } else {
+           arguments "-DNODE_MODULES_DIR=${nodeModules}",
+-            "-DORT_EXTENSIONS_ENABLED=${ortExtensionsEnabled}",
+-            "-DREACT_NATIVE_VERSION=${REACT_NATIVE_VERSION}",
+-            "-DUSE_QNN=${useQnn}",
+-            "-DUSE_NNAPI=${!useQnn}"
++                  "-DORT_EXTENSIONS_ENABLED=${ortExtensionsEnabled}",
++                  "-DREACT_NATIVE_VERSION=${REACT_NATIVE_VERSION}",
++                  "-DUSE_QNN=${useQnn}",
++                  "-DUSE_NNAPI=${!useQnn}"
+         }
+         abiFilters (*reactNativeArchitectures())
+       }
+@@ -124,12 +124,12 @@ android {
+     pickFirst '**/libfbjni.so'
+     doNotStrip resolveBuildType() == 'debug' ? "**/**/*.so" : ''
+     excludes = [
+-      "META-INF",
+-      "META-INF/**",
+-      "**/libjsi.so",
+-      "**/libfbjni.so",
+-      "**/libreact_nativemodule_core.so",
+-      "**/libturbomodulejsijni.so"
++            "META-INF",
++            "META-INF/**",
++            "**/libjsi.so",
++            "**/libfbjni.so",
++            "**/libreact_nativemodule_core.so",
++            "**/libturbomodulejsijni.so"
+     ]
+   }
+ 
+@@ -247,7 +247,9 @@ dependencies {
+     extractLibs "com.microsoft.onnxruntime:onnxruntime-android:latest.integration@aar"
+   }
+ 
+-  if (VersionNumber.parse(REACT_NATIVE_VERSION) < VersionNumber.parse("0.71")) {
++  // REVISI: VersionNumber sudah dihapus di Gradle 9.
++  // Pakai REACT_NATIVE_MINOR_VERSION yang sudah dihitung di bagian atas file.
++  if (REACT_NATIVE_VERSION.split("\\.")[0].toInteger() == 0 && REACT_NATIVE_MINOR_VERSION < 71) {
+     extractLibs "com.facebook.fbjni:fbjni:+:headers"
+     extractLibs "com.facebook.fbjni:fbjni:+"
+   }
+@@ -273,7 +275,7 @@ task extractLibs {
+ 
+ def nativeBuildDependsOn(dependsOnTask, variant) {
+   def buildTasks = tasks.findAll({ task ->
+-      !task.name.contains("Clean") && (task.name.contains("externalNative") || task.name.contains("CMake")) })
++    !task.name.contains("Clean") && (task.name.contains("externalNative") || task.name.contains("CMake")) })
+   if (variant != null) {
+     buildTasks = buildTasks.findAll({ task -> task.name.contains(variant) })
+   }
